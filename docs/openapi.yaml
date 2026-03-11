@@ -1,0 +1,324 @@
+openapi: 3.0.3
+info:
+  title: Movie API
+  version: 1.0.0
+  description: >
+    Read-only Movie API using Express, Node.js, and SQLite.
+    Provides movie listings, details, and filtered views by year and genre.
+
+servers:
+  - url: http://localhost:3000
+
+paths:
+  /health:
+    get:
+      summary: Health check
+      tags:
+        - Health
+      responses:
+        '200':
+          description: Service is healthy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: ok
+
+  /movies:
+    get:
+      summary: List all movies
+      description: >
+        Lists all movies with pagination. Results include IMDb id, title, genres,
+        release date, and budget (formatted in US dollars).
+      tags:
+        - Movies
+      parameters:
+        - in: query
+          name: page
+          description: Page number (1-based)
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+        - in: query
+          name: pageSize
+          description: Number of items per page
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            default: 50
+      responses:
+        '200':
+          description: List of movies
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MovieSummary'
+        '400':
+          description: Invalid pagination parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /movies/{imdbId}:
+    get:
+      summary: Get movie details
+      description: >
+        Returns details for a single movie, including average rating and budget
+        formatted in US dollars.
+      tags:
+        - Movies
+      parameters:
+        - in: path
+          name: imdbId
+          required: true
+          description: IMDb ID of the movie
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Movie details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MovieDetails'
+        '400':
+          description: Invalid IMDb ID
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Movie not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /movies/year/{year}:
+    get:
+      summary: List movies by year
+      description: >
+        Lists all movies released in a particular year.
+        Results are paginated and sorted by release date in chronological order.
+        Sort order can be descending.
+      tags:
+        - Movies
+      parameters:
+        - in: path
+          name: year
+          required: true
+          description: Release year (positive integer)
+          schema:
+            type: integer
+            minimum: 1
+        - in: query
+          name: page
+          description: Page number (1-based)
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+        - in: query
+          name: pageSize
+          description: Number of items per page
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            default: 50
+        - in: query
+          name: sort
+          description: Sort order for release date
+          required: false
+          schema:
+            $ref: '#/components/schemas/SortOrder'
+            default: asc
+      responses:
+        '200':
+          description: List of movies for the given year
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MovieSummary'
+        '400':
+          description: Invalid year or pagination/sort parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /movies/genre/{genre}:
+    get:
+      summary: List movies by genre
+      description: >
+        Lists movies that match the given genre. Results are paginated and
+        include IMDb id, title, genres, release date, and budget formatted
+        in US dollars.
+      tags:
+        - Movies
+      parameters:
+        - in: path
+          name: genre
+          required: true
+          description: Genre name to filter by
+          schema:
+            type: string
+        - in: query
+          name: page
+          description: Page number (1-based)
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+        - in: query
+          name: pageSize
+          description: Number of items per page
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            default: 50
+      responses:
+        '200':
+          description: List of movies for the given genre
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MovieSummary'
+        '400':
+          description: Invalid genre or pagination parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  schemas:
+    SortOrder:
+      type: string
+      enum: [asc, desc]
+
+    MoneyUsd:
+      type: string
+      nullable: true
+      description: >
+        Monetary amount formatted in US dollars with no decimal places,
+        e.g. "$1,000". Can be null when budget is not available.
+      example: "$1,000"
+
+    MovieSummary:
+      type: object
+      description: >
+        Summary view of a movie used in list endpoints.
+        Fields align with SPEC section 4.1 / 4.3 / 4.4.
+      properties:
+        imdbId:
+          type: string
+          description: IMDb ID of the movie
+          example: tt1234567
+        title:
+          type: string
+          example: The Matrix
+        genres:
+          type: string
+          nullable: true
+          description: Comma-separated list of genres
+          example: Action, Sci-Fi
+        releaseDate:
+          type: string
+          format: date
+          nullable: true
+          description: Release date (YYYY-MM-DD) or null
+          example: 1999-03-31
+        budget:
+          $ref: '#/components/schemas/MoneyUsd'
+      required:
+        - imdbId
+        - title
+        - genres
+        - releaseDate
+        - budget
+
+    MovieDetails:
+      type: object
+      description: >
+        Detailed view of a movie, including rating and production information.
+        Fields align with SPEC section 4.2 and the implemented DTO.
+      properties:
+        imdbId:
+          type: string
+          example: tt0133093
+        title:
+          type: string
+          example: The Matrix
+        description:
+          type: string
+          nullable: true
+          example: A computer hacker learns about the true nature of reality.
+        releaseDate:
+          type: string
+          format: date
+          nullable: true
+          example: 1999-03-31
+        budget:
+          $ref: '#/components/schemas/MoneyUsd'
+        runtime:
+          type: integer
+          format: int32
+          nullable: true
+          description: Runtime in minutes
+          example: 136
+        averageRating:
+          type: number
+          format: float
+          nullable: true
+          description: Average user rating from the ratings database
+          example: 4.5
+        genres:
+          type: string
+          nullable: true
+          description: Comma-separated list of genres
+          example: Action, Sci-Fi
+        originalLanguage:
+          type: string
+          nullable: true
+          example: en
+        productionCompanies:
+          type: string
+          nullable: true
+          example: Village Roadshow Pictures, Warner Bros.
+      required:
+        - imdbId
+        - title
+        - description
+        - releaseDate
+        - budget
+        - runtime
+        - averageRating
+        - genres
+        - originalLanguage
+        - productionCompanies
+
+    ErrorResponse:
+      type: object
+      properties:
+        message:
+          type: string
+      required:
+        - message
+
