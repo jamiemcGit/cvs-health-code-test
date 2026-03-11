@@ -114,6 +114,7 @@ export class MoviesRepository {
   }
 
   findByGenre(genre: string, offset: number, limit: number): Promise<Movie[]> {
+    // TODO: consider more robust genre filtering
     return new Promise((resolve, reject) => {
       moviesDb.all<Movie>(
         `
