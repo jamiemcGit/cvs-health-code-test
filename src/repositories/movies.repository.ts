@@ -1,4 +1,4 @@
-import { moviesDb } from "../db/movies.db"
+import { moviesDb } from "../database/movies.db"
 
 export interface Movie {
   movieId: number

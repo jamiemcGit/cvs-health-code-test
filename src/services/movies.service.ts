@@ -3,7 +3,7 @@ import { RatingsRepository } from "../repositories/ratings.repository"
 import {
   MovieDetailsDtoSchema,
   MovieSummaryDtoSchema,
-} from "../dto/movies.dto"
+} from "../types/movie.types"
 
 const DEFAULT_PAGE_SIZE = 50
 

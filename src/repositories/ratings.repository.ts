@@ -1,4 +1,4 @@
-import { ratingsDb } from "../db/ratings.db"
+import { ratingsDb } from "../database/ratings.db"
 
 export interface Rating {
   ratingId: number
