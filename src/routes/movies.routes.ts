@@ -5,6 +5,6 @@ const router = Router()
 const moviesController = new MoviesController()
 
 router.get("/movies", moviesController.getMovies)
-router.get("/movies/:id", moviesController.getMovieById)
+router.get("/movies/:imdbId", moviesController.getMovieById)
 
 export default router

@@ -1,12 +1,30 @@
+import { ratingsDb } from "../db/ratings.db"
+
 export interface Rating {
-  movieId: string
-  score: number
+  ratingId: number
+  userId: number
+  movieId: number
+  rating: number
+  timestamp: number
 }
 
 export class RatingsRepository {
-  async findByMovieId(movieId: string): Promise<Rating | null> {
-    void movieId
-    return null
+  findAverageRatingForMovie(movieId: number): Promise<number | null> {
+    return new Promise((resolve, reject) => {
+      ratingsDb.get<{ averageRating: number | null }>(
+        `
+        SELECT AVG(rating) AS averageRating
+        FROM ratings
+        WHERE movieId = ?
+        `,
+        [movieId],
+        (err, row) => {
+          if (err) return reject(err)
+          resolve(row?.averageRating ?? null)
+        }
+      )
+    })
   }
 }
+
 
