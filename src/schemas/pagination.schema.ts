@@ -7,3 +7,12 @@ export const paginationSchema = z.object({
 
 export type PaginationQuery = z.infer<typeof paginationSchema>
 
+export const sortOrderSchema = z.enum(["asc", "desc"]).optional()
+
+export type SortOrder = z.infer<typeof sortOrderSchema>
+
+export const paginationWithSortSchema = paginationSchema.extend({
+  sort: sortOrderSchema,
+})
+
+export type PaginationWithSortQuery = z.infer<typeof paginationWithSortSchema>

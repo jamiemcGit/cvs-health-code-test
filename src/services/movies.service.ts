@@ -4,6 +4,7 @@ import {
   MovieDetailsDtoSchema,
   MovieSummaryDtoSchema,
 } from "../types/movie.types"
+import type { SortOrder } from "../schemas/pagination.schema"
 
 const DEFAULT_PAGE_SIZE = 50
 
@@ -17,6 +18,56 @@ export class MoviesService {
     const limit = pageSize
     const offset = (page - 1) * pageSize
     const movies = await this.moviesRepository.findAll(offset, limit)
+
+    return movies.map((movie) =>
+      MovieSummaryDtoSchema.parse({
+        imdbId: movie.imdbId,
+        title: movie.title,
+        genres: movie.genres,
+        releaseDate: movie.releaseDate,
+        budget: movie.budget,
+      })
+    )
+  }
+
+  async getMoviesByYear(
+    year: number,
+    page = 1,
+    pageSize = DEFAULT_PAGE_SIZE,
+    sort: SortOrder = "asc"
+  ) {
+    const limit = pageSize
+    const offset = (page - 1) * pageSize
+    const movies = await this.moviesRepository.findByYear(
+      year,
+      offset,
+      limit,
+      sort ?? "asc"
+    )
+
+    return movies.map((movie) =>
+      MovieSummaryDtoSchema.parse({
+        imdbId: movie.imdbId,
+        title: movie.title,
+        genres: movie.genres,
+        releaseDate: movie.releaseDate,
+        budget: movie.budget,
+      })
+    )
+  }
+
+  async getMoviesByGenre(
+    genre: string,
+    page = 1,
+    pageSize = DEFAULT_PAGE_SIZE
+  ) {
+    const limit = pageSize
+    const offset = (page - 1) * pageSize
+    const movies = await this.moviesRepository.findByGenre(
+      genre,
+      offset,
+      limit
+    )
 
     return movies.map((movie) =>
       MovieSummaryDtoSchema.parse({
