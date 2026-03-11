@@ -48,7 +48,7 @@ AC:
 #### Movies By Year
 AC:
 
-* An endpoint exists that will list all movies from a particular year 
+* An endpoint exists that will list all movies from a particular year
 * List is paginated: 50 movies per page, the page can be altered with the `page` query params
 * List is sorted by date in chronological order
 * Sort order can be descending
