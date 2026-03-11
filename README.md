@@ -65,3 +65,13 @@ AC:
 
 * This is a test of your abilities and not how fast you can crank through random stories.  As such, it is more important to produce well structured code that meets the criteria in the user stories rather than getting all stories done.
 * If you get stuck, please ask someone.  We want to know how you work both as an individual and as part of a team.  You will not lose points for asking for help on something that is unclear or where you are stuck.
+
+## Screenshots
+
+- [OpenAPI spec](./screenshots/openapi-spec.png)
+- [GET /movies](./screenshots/get-movies.png)
+- [GET /movies/{imdbId}](./screenshots/get-movie-imdbId.png)
+- [GET /movies/year/{year} asc](./screenshots/get-movies-year-asc.png)
+- [GET /movies/year/{year} desc](./screenshots/get-movies-year-desc.png)
+- [GET /movies/genre/{genre}](./screenshots/get-movies-genre.png)
+- [Unit tests](./screenshots/unit-tests.png)
