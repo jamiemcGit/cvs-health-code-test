@@ -20,30 +20,29 @@ The API reads from the provided SQLite databases under `db/` and exposes movie d
 
 ### 3.1 Pagination
 
-Query Params:
-- `page` — optional, positve integer, default `1`
-- `page_size` — optional, positve integer, default `50`
-
+Query parameters:
+- `page` — optional, positive integer, default `1`
+- `pageSize` — optional, positive integer, default `50`
 
 ## 4. Endpoints
 
 ## 4.1 List All Movies - `GET /movies`
 
 - Lists all movies
-- List is paginated: 50 movies per page, the page can be altered with the `page` query params
+- List is paginated: 50 movies per page, the page can be altered with the `page` and `pageSize` query parameters
 - Columns should include: imdb id, title, genres, release date, budget
 - Budget is displayed in dollars
 
 ### Query Params
 
-- pagination (optional)
+- pagination (optional) (see [section 3.1](#31-pagination) above)
 
 ### Response Fields Per Movie
 
-- `imdb_id`
+- `imdbId`
 - `title`
 - `genres`
-- `release_date`
+- `releaseDate`
 - `budget` - formatted in dollars
 
 ## 4.2 Movie Details - `GET /movies/{imdbId}`
@@ -59,21 +58,21 @@ Query Params:
 
 ### Response Fields
 
-- `imdb_id`
+- `imdbId`
 - `title`
 - `description`
-- `release_date`
+- `releaseDate`
 - `budget` - formatted in dollars
 - `runtime`
-- `average_rating`
+- `averageRating`
 - `genres`
-- `original_language`
-- `production_companies`
+- `originalLanguage`
+- `productionCompanies`
 
 ## 4.3 Movies By Year- `GET /movies/year/{year}`
 
 - List all movies from a particular year
-- List is paginated: 50 movies per page, the page can be altered with the `page` query params
+- List is paginated: 50 movies per page, the page can be altered with the `page` and `pageSize` query parameters
 - List is sorted by date in chronological order
 - Sort order can be descending
 - Columns include: imdb id, title, genres, release date, budget
@@ -85,21 +84,21 @@ Query Params:
 
 ### Query Parameters
 
-- pagination (optional)
+- pagination (optional) (see [section 3.1](#31-pagination) above)
 - `sort` — optional, values: `asc` - default | `desc`
 
 ### Response Fields Per Movie
 
-- `imdb_id`
+- `imdbId`
 - `title`
 - `genres`
-- `release_date`
+- `releaseDate`
 - `budget` - formatted in dollars
 
 ## 4.4 Movies By Genre - `GET /movies/genre/{genre}`
 
 - List all movies by a genre
-- List is paginated: 50 movies per page, the page can be altered with the `page` query params
+- List is paginated: 50 movies per page, the page can be altered with the `page` and `pageSize` query parameters
 - Columns include: imdb id, title, genres, release date, budget
 - Budget should be displayed in dollars
 
@@ -109,12 +108,12 @@ Query Params:
 
 ### Query Parameters
 
-- `page` — optional, integer, default `1`
+- pagination (optional) (see [section 3.1](#31-pagination) above)
 
 ### Response Fields Per Movie
 
-- `imdb_id`
+- `imdbId`
 - `title`
 - `genres`
-- `release_date`
+- `releaseDate`
 - `budget` - formatted in dollars
